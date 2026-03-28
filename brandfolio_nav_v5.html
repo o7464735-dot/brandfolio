@@ -1,0 +1,483 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+  :root {
+    --blue: #2563EB; --blue-dark: #1d4ed8; --blue-light: #dbeafe; --blue-pale: #eff6ff;
+    --text: var(--color-text-primary); --muted: var(--color-text-secondary);
+    --hint: var(--color-text-tertiary); --bg: var(--color-background-primary);
+    --bg2: var(--color-background-secondary); --border: var(--color-border-tertiary);
+  }
+  body { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
+
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; border-bottom: 0.5px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 200; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .nav-brand { font-size: 18px; font-weight: 500; color: var(--text); }
+  .nav-brand span { font-weight: 300; color: var(--muted); }
+  .nav-links { display: flex; gap: 8px; list-style: none; }
+  .nav-item { position: relative; }
+
+  /* BOUTONS NAV BLEUS */
+  .nav-item > a {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 500; color: white;
+    text-decoration: none; padding: 9px 18px;
+    background: var(--blue); border-radius: 9px;
+    transition: background 0.2s, transform 0.15s;
+    border: none; cursor: pointer;
+  }
+  .nav-item > a:hover { background: var(--blue-dark); transform: translateY(-1px); }
+  .nav-item > a .arrow {
+    font-size: 9px; opacity: 0.75;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .nav-item:hover > a .arrow { transform: rotate(180deg); }
+
+  /* DROPDOWN */
+  .dropdown {
+    display: none; position: absolute; top: calc(100% + 10px); left: 0;
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: 14px; padding: 8px; min-width: 230px;
+    z-index: 300; box-shadow: 0 8px 32px rgba(37,99,235,0.10);
+  }
+  .nav-item:hover .dropdown { display: block; }
+  .dropdown-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s; text-decoration: none;
+  }
+  .dropdown-item:hover { background: var(--blue-pale); }
+  .dropdown-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--blue-pale); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .dropdown-icon svg { width: 16px; height: 16px; }
+  .dropdown-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .dropdown-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .dropdown-divider { height: 0.5px; background: var(--border); margin: 6px 0; }
+
+  .nav-cta {
+    background: white; color: var(--blue);
+    border: 2px solid var(--blue);
+    padding: 9px 20px; border-radius: 9px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--blue); color: white; transform: translateY(-1px); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HEX */
+  .hex-deco { position: absolute; opacity: 0.06; pointer-events: none; z-index: 0; }
+  .hex-divider { display: flex; justify-content: center; align-items: center; overflow: hidden; height: 64px; }
+  .hex-divider-inner { display: flex; align-items: center; gap: 6px; }
+  .hex-sm { width: 18px; height: 18px; opacity: 0.18; }
+  .hex-md { width: 28px; height: 28px; opacity: 0.35; }
+  .hex-lg { width: 38px; height: 38px; opacity: 0.6; }
+  .hex-xl { width: 48px; height: 48px; opacity: 1; }
+
+  /* HERO */
+  .hero { padding: 5rem 2.5rem 3rem; max-width: 860px; margin: 0 auto; text-align: center; position: relative; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--blue-pale); border: 0.5px solid #bfdbfe; color: #1d4ed8; font-size: 12px; padding: 5px 14px; border-radius: 20px; margin-bottom: 2rem; }
+  .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+  h1 { font-family: 'DM Serif Display', serif; font-size: 48px; font-weight: 400; line-height: 1.15; color: var(--text); margin-bottom: 1.5rem; }
+  h1 em { font-style: italic; color: var(--blue); }
+  .hero p { font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 560px; margin: 0 auto 2.5rem; }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--blue); color: white; border: none; padding: 13px 28px; border-radius: 10px; font-size: 15px; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-secondary { background: transparent; color: var(--text); border: 0.5px solid var(--color-border-secondary); padding: 13px 28px; border-radius: 10px; font-size: 15px; cursor: pointer; font-family: inherit; }
+  .btn-secondary:hover { background: var(--bg2); }
+  .hero-stats { display: flex; gap: 2.5rem; justify-content: center; margin-top: 3rem; padding-top: 2.5rem; border-top: 0.5px solid var(--border); }
+  .stat { text-align: center; }
+  .stat-num { font-size: 26px; font-weight: 500; color: var(--blue); }
+  .stat-label { font-size: 13px; color: var(--hint); margin-top: 2px; }
+
+  section { padding: 4rem 2.5rem; max-width: 960px; margin: 0 auto; position: relative; }
+  .section-label { font-size: 11px; letter-spacing: 3px; color: var(--blue); text-transform: uppercase; margin-bottom: 0.8rem; }
+  h2 { font-family: 'DM Serif Display', serif; font-size: 34px; font-weight: 400; color: var(--text); margin-bottom: 0.8rem; line-height: 1.2; }
+  .section-sub { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.6; }
+
+  .subpage-hero { padding: 3.5rem 2.5rem 2.5rem; max-width: 960px; margin: 0 auto; border-bottom: 0.5px solid var(--border); }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; margin-bottom: 1.5rem; border: none; background: none; font-family: inherit; padding: 0; }
+  .back-btn:hover { color: var(--text); }
+  .subpage-hero h1 { font-size: 38px; margin-bottom: 0.8rem; }
+  .subpage-hero p { font-size: 16px; color: var(--muted); max-width: 560px; line-height: 1.6; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 2.5rem; }
+  .service-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 1.5rem; transition: border-color 0.2s, transform 0.2s; cursor: pointer; }
+  .service-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .service-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+  .service-icon svg { width: 20px; height: 20px; }
+  .service-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .service-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .card-link { font-size: 12px; color: var(--blue); margin-top: 12px; display: block; }
+
+  .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 2rem; }
+  .detail-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 1.5rem; }
+  .detail-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .detail-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .detail-card ul { margin-top: 10px; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .detail-card ul li { font-size: 13px; color: var(--muted); display: flex; align-items: flex-start; gap: 8px; }
+
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 2.5rem; }
+  .step { display: flex; gap: 2rem; padding: 1.8rem 0; border-bottom: 0.5px solid var(--border); }
+  .step:last-child { border-bottom: none; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); color: white; font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 16px; font-weight: 500; margin-bottom: 5px; }
+  .step p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 2.5rem; }
+  .testimonial { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 1.5rem; }
+  .testimonial-text { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 1rem; font-style: italic; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+
+  .pricing-section { background: var(--bg2); padding: 4rem 2.5rem; }
+  .pricing-inner { max-width: 960px; margin: 0 auto; }
+  .pricing-toggle { display: flex; align-items: center; gap: 12px; margin-top: 1.5rem; }
+  .toggle-label { font-size: 13px; color: var(--muted); }
+  .toggle-label.active { color: var(--text); font-weight: 500; }
+  .toggle-btn { width: 44px; height: 24px; border-radius: 12px; background: var(--blue); border: none; cursor: pointer; position: relative; }
+  .toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; transition: transform 0.2s; }
+  .toggle-btn.annual .toggle-thumb { transform: translateX(20px); }
+  .save-badge { background: #dcfce7; color: #166534; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 2rem; }
+  .pricing-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 1.6rem; display: flex; flex-direction: column; position: relative; transition: border-color 0.2s, transform 0.2s; }
+  .pricing-card:hover { transform: translateY(-3px); }
+  .pricing-card.popular { border: 2px solid var(--blue); }
+  .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--blue); color: white; font-size: 11px; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+  .plan-name { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+  .plan-price { font-size: 36px; font-weight: 500; color: var(--text); line-height: 1; }
+  .plan-price sup { font-size: 18px; vertical-align: super; }
+  .plan-price sub { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .plan-desc { font-size: 13px; color: var(--muted); margin: 0.8rem 0 1.2rem; line-height: 1.5; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; margin-bottom: 1.5rem; }
+  .plan-features li { font-size: 13px; color: var(--muted); display: flex; align-items: flex-start; gap: 8px; }
+  .check { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+  .plan-btn { border: 0.5px solid var(--border); background: transparent; color: var(--text); padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .plan-btn:hover { background: var(--bg2); }
+  .pricing-card.popular .plan-btn { background: var(--blue); color: white; border-color: var(--blue); }
+  .pricing-card.popular .plan-btn:hover { background: var(--blue-dark); }
+  .extras-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 2rem; }
+  .extra-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--border-radius-md); padding: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+  .extra-name { font-size: 14px; font-weight: 500; }
+  .extra-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .extra-price { font-size: 18px; font-weight: 500; color: var(--blue); white-space: nowrap; }
+  .extra-price span { font-size: 12px; color: var(--hint); font-weight: 400; }
+
+  .cta-section { background: var(--blue); border-radius: 16px; padding: 4rem 3rem; text-align: center; margin: 0 2.5rem 4rem; max-width: 960px; margin-left: auto; margin-right: auto; }
+  .cta-section h2 { color: white; font-family: 'DM Serif Display', serif; font-size: 36px; margin-bottom: 1rem; }
+  .cta-section p { color: #bfdbfe; font-size: 16px; margin-bottom: 2rem; }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .form-group label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .form-group input, .form-group textarea, .form-group select { padding: 10px 14px; border: 0.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text); }
+  .form-group textarea { min-height: 120px; resize: vertical; }
+  .contact-info { background: var(--blue); border-radius: 14px; padding: 2rem; color: white; }
+  .contact-info h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 1rem; font-weight: 400; }
+  .contact-info p { font-size: 14px; opacity: 0.85; line-height: 1.6; margin-bottom: 1.5rem; }
+  .contact-detail { display: flex; align-items: center; gap: 10px; font-size: 13px; margin-bottom: 10px; opacity: 0.9; }
+
+  footer { border-top: 0.5px solid var(--border); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; }
+  footer p { font-size: 13px; color: var(--hint); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 13px; color: var(--hint); text-decoration: none; }
+  .annual-price { display: none; }
+  .monthly-price { display: block; }
+</style>
+
+<nav>
+  <div class="nav-logo" onclick="goTo('home')">
+    <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+      <polygon points="17,2 31,10 31,24 17,32 3,24 3,10" fill="#2563EB"/>
+      <rect x="9" y="9" width="4" height="16" rx="1.5" fill="white"/>
+      <path d="M13 9 L13 17 Q22 17 22 13 Q22 9 13 9 Z" fill="white"/>
+      <path d="M13 17 L13 25 Q24 25 24 21 Q24 17 13 17 Z" fill="white"/>
+      <polygon points="31,24 31,18 25,24" fill="#F97316" opacity="0.9"/>
+    </svg>
+    <span class="nav-brand">Brand<span>folio</span></span>
+  </div>
+  <ul class="nav-links">
+    <li class="nav-item">
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.3"/><path d="M4 6h6M4 8.5h4" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Services <span class="arrow">▾</span>
+      </a>
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="goTo('service-identite')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="8" r="4"/><path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+          <div><div class="dropdown-label">Stratégie d'identité</div><div class="dropdown-desc">Positionnement & message clé</div></div>
+        </div>
+        <div class="dropdown-item" onclick="goTo('service-site')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+          <div><div class="dropdown-label">Site vitrine sur-mesure</div><div class="dropdown-desc">Design & développement web</div></div>
+        </div>
+        <div class="dropdown-item" onclick="goTo('service-contenu')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l5 5-5 5M10 14h6"/></svg></div>
+          <div><div class="dropdown-label">Contenu & réseaux</div><div class="dropdown-desc">Posts, visuels & publicité</div></div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="goTo('service-pub')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="16" height="10" rx="2"/><path d="M6 9h8M6 12h5"/></svg></div>
+          <div><div class="dropdown-label">Campagnes publicitaires</div><div class="dropdown-desc">Meta, LinkedIn & TikTok Ads</div></div>
+        </div>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.3"/><path d="M7 4v3l2 1.5" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Tarifs <span class="arrow">▾</span>
+      </a>
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="goTo('tarifs')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><path d="M4 10h12M10 4v12"/></svg></div>
+          <div><div class="dropdown-label">Voir tous les tarifs</div><div class="dropdown-desc">Formules & extras à la carte</div></div>
+        </div>
+        <div class="dropdown-item" onclick="goTo('tarifs')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 7v3l2 2"/></svg></div>
+          <div><div class="dropdown-label">Starter — gratuit</div><div class="dropdown-desc">Pour commencer sans risque</div></div>
+        </div>
+        <div class="dropdown-item" onclick="goTo('tarifs')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><path d="M10 3l2 4 5 .7-3.5 3.4.8 5L10 14l-4.3 2.1.8-5L3 7.7l5-.7z"/></svg></div>
+          <div><div class="dropdown-label">Expert — le plus populaire</div><div class="dropdown-desc">Le choix des entrepreneurs</div></div>
+        </div>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M2 7h7M2 10h9" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+        À propos <span class="arrow">▾</span>
+      </a>
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="goTo('temoignages')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h12M4 10h8M4 14h10"/></svg></div>
+          <div><div class="dropdown-label">Témoignages</div><div class="dropdown-desc">Ce que disent nos clients</div></div>
+        </div>
+        <div class="dropdown-item" onclick="goTo('contact')">
+          <div class="dropdown-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h14v10H3zM3 5l7 7 7-7"/></svg></div>
+          <div><div class="dropdown-label">Nous contacter</div><div class="dropdown-desc">Parlons de votre projet</div></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <button class="nav-cta" onclick="goTo('contact')">Démarrer mon projet</button>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div style="position:relative;overflow:hidden;">
+    <div class="hex-deco" style="top:-20px;right:-30px;"><svg width="220" height="220" viewBox="0 0 220 220"><polygon points="110,10 200,60 200,160 110,210 20,160 20,60" fill="#2563EB"/></svg></div>
+    <div class="hero">
+      <div class="hero-badge"><div class="hero-badge-dot"></div>Personal branding pour entrepreneurs & freelances</div>
+      <h1>Construisez une marque<br>qui vous <em>ressemble</em></h1>
+      <p>Brandfolio conçoit votre identité professionnelle de A à Z — site web, visuels, contenu et publicité — pour que vous vous démarquiez et attirez les bons clients.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="goTo('contact')">Démarrer mon projet</button>
+        <button class="btn-secondary" onclick="goTo('service-identite')">Découvrir nos services</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">1 200+</div><div class="stat-label">entrepreneurs accompagnés</div></div>
+        <div class="stat"><div class="stat-num">4.9/5</div><div class="stat-label">satisfaction client</div></div>
+        <div class="stat"><div class="stat-num">3x</div><div class="stat-label">plus de visibilité en moyenne</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hex-divider"><div class="hex-divider-inner"><svg class="hex-sm" viewBox="0 0 18 18"><polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="#2563EB"/></svg><svg class="hex-md" viewBox="0 0 28 28"><polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="#2563EB"/></svg><svg class="hex-lg" viewBox="0 0 38 38"><polygon points="19,2 36,11 36,27 19,36 2,27 2,11" fill="#2563EB"/></svg><svg class="hex-xl" viewBox="0 0 48 48"><polygon points="24,2 46,14 46,34 24,46 2,34 2,14" fill="#2563EB"/></svg><svg class="hex-lg" viewBox="0 0 38 38"><polygon points="19,2 36,11 36,27 19,36 2,27 2,11" fill="#2563EB"/></svg><svg class="hex-md" viewBox="0 0 28 28"><polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="#2563EB"/></svg><svg class="hex-sm" viewBox="0 0 18 18"><polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="#2563EB"/></svg></div></div>
+  <section>
+    <div class="section-label">Nos services</div>
+    <h2>Tout ce qu'il vous faut<br>pour briller en ligne</h2>
+    <p class="section-sub">De la stratégie à la réalisation, nous prenons en charge chaque aspect de votre personal branding.</p>
+    <div class="services-grid">
+      <div class="service-card" onclick="goTo('service-identite')">
+        <div class="service-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="8" r="4"/><path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+        <h3>Stratégie d'identité</h3>
+        <p>Nous définissons votre positionnement unique, vos valeurs et votre message clé.</p>
+        <span class="card-link">En savoir plus →</span>
+      </div>
+      <div class="service-card" onclick="goTo('service-site')">
+        <div class="service-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg></div>
+        <h3>Site vitrine sur-mesure</h3>
+        <p>Votre site web professionnel, pensé pour convertir vos visiteurs en clients.</p>
+        <span class="card-link">En savoir plus →</span>
+      </div>
+      <div class="service-card" onclick="goTo('service-pub')">
+        <div class="service-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="16" height="10" rx="2"/><path d="M6 9h8M6 12h5"/></svg></div>
+        <h3>Publicité réseaux sociaux</h3>
+        <p>Campagnes Meta, LinkedIn et TikTok Ads gérées de A à Z pour vous.</p>
+        <span class="card-link">En savoir plus →</span>
+      </div>
+    </div>
+  </section>
+  <div class="hex-divider"><div class="hex-divider-inner"><svg class="hex-sm" viewBox="0 0 18 18"><polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="#2563EB"/></svg><svg class="hex-md" viewBox="0 0 28 28"><polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="#2563EB"/></svg><svg class="hex-lg" viewBox="0 0 38 38"><polygon points="19,2 36,11 36,27 19,36 2,27 2,11" fill="#2563EB"/></svg><svg class="hex-xl" viewBox="0 0 48 48"><polygon points="24,2 46,14 46,34 24,46 2,34 2,14" fill="#2563EB"/></svg><svg class="hex-lg" viewBox="0 0 38 38"><polygon points="19,2 36,11 36,27 19,36 2,27 2,11" fill="#2563EB"/></svg><svg class="hex-md" viewBox="0 0 28 28"><polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="#2563EB"/></svg><svg class="hex-sm" viewBox="0 0 18 18"><polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="#2563EB"/></svg></div></div>
+  <div class="cta-section">
+    <h2>Prêt à construire votre marque ?</h2>
+    <p>Rejoignez plus de 1 200 entrepreneurs qui ont repris le contrôle de leur image.</p>
+    <div class="hero-actions" style="justify-content:center;">
+      <button class="btn-primary" style="background:white;color:var(--blue);" onclick="goTo('contact')">Démarrer mon projet</button>
+      <button class="btn-secondary" style="border-color:rgba(255,255,255,0.4);color:white;" onclick="goTo('tarifs')">Voir les tarifs</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE IDENTITE -->
+<div id="page-service-identite" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Service</div><h1>Stratégie <em>d'identité</em></h1><p>Votre positionnement est la fondation de tout. Nous vous aidons à définir qui vous êtes, ce que vous apportez, et comment le dire avec clarté.</p></div>
+  <section>
+    <div class="detail-grid">
+      <div class="detail-card"><h3>Audit de marque personnelle</h3><p>Analyse de votre situation, vos points forts et vos axes de différenciation.</p><ul><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Analyse de votre profil actuel</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Benchmark concurrentiel</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Identification de vos forces</li></ul></div>
+      <div class="detail-card"><h3>Définition du positionnement</h3><p>Votre proposition de valeur unique et votre message différenciant.</p><ul><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Clarification de votre cible</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Pitch personnel en 30 secondes</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Charte de ton & de voix</li></ul></div>
+      <div class="detail-card"><h3>Kit d'identité visuelle</h3><p>Logo, couleurs, typographies — une identité cohérente qui vous représente.</p><ul><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Logo principal + variantes</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Palette de couleurs</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Guide d'utilisation</li></ul></div>
+      <div class="detail-card"><h3>Plan de déploiement</h3><p>Une feuille de route concrète pour déployer votre nouvelle identité partout.</p><ul><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Checklist de déploiement</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Templates prêts à l'emploi</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Suivi post-lancement 30 jours</li></ul></div>
+    </div>
+    <div style="margin-top:2.5rem;text-align:center;"><button class="btn-primary" onclick="goTo('contact')">Démarrer ma stratégie</button></div>
+  </section>
+</div>
+
+<!-- SERVICE SITE -->
+<div id="page-service-site" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Service</div><h1>Site vitrine <em>sur-mesure</em></h1><p>Votre site web est votre vitrine 24h/24. Nous le concevons pour refléter votre identité et transformer vos visiteurs en clients.</p></div>
+  <section>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div><h3>Briefing & maquette</h3><p>Nous recueillons vos besoins et vous présentons une maquette avant tout développement.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Design & développement</h3><p>Un site élégant, rapide, optimisé pour tous les écrans. Chaque détail soigné pour vous représenter.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Rédaction des textes</h3><p>Nous rédigeons l'ensemble du contenu dans votre ton et votre style.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div><h3>Mise en ligne & suivi</h3><p>Nous gérons le déploiement et restons disponibles pour toute évolution.</p></div></div>
+    </div>
+    <div style="margin-top:2.5rem;text-align:center;"><button class="btn-primary" onclick="goTo('contact')">Créer mon site vitrine</button></div>
+  </section>
+</div>
+
+<!-- SERVICE CONTENU -->
+<div id="page-service-contenu" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Service</div><h1>Contenu & <em>réseaux sociaux</em></h1><p>Une présence régulière et cohérente sur les réseaux, c'est ce qui transforme une marque inconnue en référence.</p></div>
+  <section>
+    <div class="detail-grid">
+      <div class="detail-card"><h3>Posts LinkedIn</h3><p>Des posts percutants qui reflètent votre expertise et engagent votre audience.</p></div>
+      <div class="detail-card"><h3>Visuels & stories</h3><p>Carrousels, infographies, stories — au format adapté à chaque plateforme.</p></div>
+      <div class="detail-card"><h3>Bio & profils optimisés</h3><p>Votre profil réécrit pour maximiser votre impact au premier regard.</p></div>
+      <div class="detail-card"><h3>Calendrier éditorial</h3><p>Un planning de publication structuré pour une présence régulière sans effort.</p></div>
+    </div>
+    <div style="margin-top:2.5rem;text-align:center;"><button class="btn-primary" onclick="goTo('contact')">Booster ma présence</button></div>
+  </section>
+</div>
+
+<!-- SERVICE PUB -->
+<div id="page-service-pub" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Service</div><h1>Campagnes <em>publicitaires</em></h1><p>Touchez les bonnes personnes au bon moment. Nous gérons vos publicités sur Meta, LinkedIn et TikTok.</p></div>
+  <section>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="16" height="10" rx="2"/></svg></div><h3>Meta Ads</h3><p>Facebook & Instagram — ciblage précis, visuels accrocheurs, suivi des conversions.</p></div>
+      <div class="service-card"><div class="service-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10h6M10 7v6"/></svg></div><h3>LinkedIn Ads</h3><p>Ciblage professionnel par secteur et poste. Le canal numéro un pour le B2B.</p></div>
+      <div class="service-card"><div class="service-icon"><svg viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"><path d="M10 4v8M6 8l4-4 4 4M4 16h12"/></svg></div><h3>TikTok Ads</h3><p>Formats vidéo courts pour une audience jeune et engagée. Le canal en pleine explosion.</p></div>
+    </div>
+    <div style="margin-top:2.5rem;text-align:center;"><button class="btn-primary" onclick="goTo('contact')">Lancer ma campagne</button></div>
+  </section>
+</div>
+
+<!-- TARIFS -->
+<div id="page-tarifs" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Tarifs</div><h1>Des offres pour chaque<br><em>étape de votre parcours</em></h1><p>Sans engagement. Changez de formule à tout moment.</p></div>
+  <div style="padding:2rem 2.5rem 4rem;max-width:960px;margin:0 auto;">
+    <div class="pricing-toggle"><span class="toggle-label active" id="lbl-monthly">Mensuel</span><button class="toggle-btn monthly" id="toggle" onclick="switchBilling()"><div class="toggle-thumb"></div></button><span class="toggle-label" id="lbl-annual">Annuel</span><span class="save-badge">-20%</span></div>
+    <div class="pricing-grid">
+      <div class="pricing-card"><div class="plan-name">Starter</div><div class="plan-price monthly-price"><sup>€</sup>0<sub>/mois</sub></div><div class="plan-price annual-price"><sup>€</sup>0<sub>/an</sub></div><p class="plan-desc">Pour découvrir et poser les bases.</p><ul class="plan-features"><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Profil de marque basique</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>1 page vitrine</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Sous-domaine Brandfolio</li></ul><button class="plan-btn" onclick="goTo('contact')">Commencer gratuitement</button></div>
+      <div class="pricing-card"><div class="plan-name">Pro</div><div class="plan-price monthly-price"><sup>€</sup>19<sub>/mois</sub></div><div class="plan-price annual-price"><sup>€</sup>182<sub>/an</sub></div><p class="plan-desc">Pour une image pro et cohérente.</p><ul class="plan-features"><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Site multi-pages</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Nom de domaine custom</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>5 posts réseaux/mois</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Kit LinkedIn complet</li></ul><button class="plan-btn" onclick="goTo('contact')">Choisir Pro</button></div>
+      <div class="pricing-card popular"><div class="popular-badge">Le plus populaire</div><div class="plan-name">Expert</div><div class="plan-price monthly-price"><sup>€</sup>49<sub>/mois</sub></div><div class="plan-price annual-price"><sup>€</sup>470<sub>/an</sub></div><p class="plan-desc">Pour dominer votre niche.</p><ul class="plan-features"><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Audit de marque mensuel</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>20 posts réseaux/mois</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Gestion pub réseaux sociaux</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Analytics & reporting</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Support prioritaire 24h</li></ul><button class="plan-btn" onclick="goTo('contact')">Choisir Expert</button></div>
+      <div class="pricing-card"><div class="plan-name">Agence</div><div class="plan-price monthly-price"><sup>€</sup>149<sub>/mois</sub></div><div class="plan-price annual-price"><sup>€</sup>1430<sub>/an</sub></div><p class="plan-desc">Pour gérer plusieurs clients.</p><ul class="plan-features"><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Jusqu'à 20 profils clients</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>White-label disponible</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Campagnes pub multi-clients</li><li><svg class="check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#dbeafe"/><path d="M5 8l2 2 4-4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/></svg>Account manager dédié</li></ul><button class="plan-btn" onclick="goTo('contact')">Contacter l'équipe</button></div>
+    </div>
+    <div style="margin-top:2.5rem;"><div class="section-label">Extras à la carte</div></div>
+    <div class="extras-grid">
+      <div class="extra-card"><div><div class="extra-name">Campagne Meta Ads</div><div class="extra-desc">Facebook & Instagram gérés</div></div><div class="extra-price">€79<span>/mois</span></div></div>
+      <div class="extra-card"><div><div class="extra-name">Campagne LinkedIn Ads</div><div class="extra-desc">Ciblage pro & suivi perf.</div></div><div class="extra-price">€99<span>/mois</span></div></div>
+      <div class="extra-card"><div><div class="extra-name">Pack réseaux complet</div><div class="extra-desc">Meta + LinkedIn + TikTok</div></div><div class="extra-price">€199<span>/mois</span></div></div>
+      <div class="extra-card"><div><div class="extra-name">Session stratégie 1:1</div><div class="extra-desc">60 min avec un expert</div></div><div class="extra-price">€89<span>/session</span></div></div>
+      <div class="extra-card"><div><div class="extra-name">Logo & identité visuelle</div><div class="extra-desc">Création graphique complète</div></div><div class="extra-price">€199<span>/unique</span></div></div>
+      <div class="extra-card"><div><div class="extra-name">Refonte LinkedIn</div><div class="extra-desc">Optimisation complète</div></div><div class="extra-price">€149<span>/unique</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TEMOIGNAGES -->
+<div id="page-temoignages" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Témoignages</div><h1>Ils ont transformé<br>leur <em>image</em></h1><p>Des freelances et entrepreneurs qui ont investi dans leur personal branding.</p></div>
+  <section>
+    <div class="testimonials-grid">
+      <div class="testimonial"><p class="testimonial-text">"En deux semaines, j'ai eu trois nouvelles demandes de mission. Mon profil n'avait jamais été aussi percutant."</p><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">SL</div><div><div style="font-size:13px;font-weight:500;">Sophie Lemaire</div><div style="font-size:12px;color:var(--hint);">Consultante RH freelance</div></div></div></div>
+      <div class="testimonial"><p class="testimonial-text">"Brandfolio m'a aidé à comprendre ce qui me différenciait. Maintenant je le dis avec conviction."</p><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">KD</div><div><div style="font-size:13px;font-weight:500;">Karim Daoudi</div><div style="font-size:12px;color:var(--hint);">Coach business</div></div></div></div>
+      <div class="testimonial"><p class="testimonial-text">"Mon site est magnifique et mes clients me font confiance dès le premier contact."</p><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">MA</div><div><div style="font-size:13px;font-weight:500;">Marie Aubert</div><div style="font-size:12px;color:var(--hint);">Designer indépendante</div></div></div></div>
+      <div class="testimonial"><p class="testimonial-text">"La campagne LinkedIn a généré 12 leads qualifiés en un mois. Un ROI que je n'espérais pas aussi vite."</p><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">TR</div><div><div style="font-size:13px;font-weight:500;">Thomas Renard</div><div style="font-size:12px;color:var(--hint);">Consultant finance</div></div></div></div>
+      <div class="testimonial"><p class="testimonial-text">"Enfin une identité qui me ressemble vraiment. Le kit de contenu m'a fait gagner des heures chaque semaine."</p><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">LM</div><div><div style="font-size:13px;font-weight:500;">Lucie Marchand</div><div style="font-size:12px;color:var(--hint);">Coach bien-être</div></div></div></div>
+      <div class="testimonial"><p class="testimonial-text">"Une équipe à l'écoute, réactive, qui comprend vraiment les enjeux du personal branding."</p><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">AB</div><div><div style="font-size:13px;font-weight:500;">Antoine Bernard</div><div style="font-size:12px;color:var(--hint);">Développeur freelance</div></div></div></div>
+    </div>
+    <div style="margin-top:2.5rem;text-align:center;"><button class="btn-primary" onclick="goTo('contact')">Rejoindre nos clients</button></div>
+  </section>
+</div>
+
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="subpage-hero"><button class="back-btn" onclick="goTo('home')">← Retour</button><div class="hero-badge"><div class="hero-badge-dot"></div>Contact</div><h1>Parlons de votre <em>projet</em></h1><p>Dites-nous où vous en êtes. Nous vous répondons sous 24h.</p></div>
+  <section>
+    <div class="contact-grid">
+      <div>
+        <div class="form-group"><label>Votre prénom & nom</label><input type="text" placeholder="Marie Dupont"/></div>
+        <div class="form-group"><label>Votre email</label><input type="email" placeholder="marie@exemple.fr"/></div>
+        <div class="form-group"><label>Votre activité</label><input type="text" placeholder="Coach, consultant, designer..."/></div>
+        <div class="form-group"><label>Service souhaité</label><select><option>Stratégie d'identité</option><option>Site vitrine</option><option>Contenu & réseaux</option><option>Campagne publicitaire</option><option>Je ne sais pas encore</option></select></div>
+        <div class="form-group"><label>Votre message</label><textarea placeholder="Parlez-nous de votre projet..."></textarea></div>
+        <button class="btn-primary" style="width:100%;">Envoyer ma demande</button>
+      </div>
+      <div class="contact-info">
+        <h3>On s'occupe de tout</h3>
+        <p>Pas besoin de savoir exactement ce dont vous avez besoin. Dites-nous où vous voulez aller.</p>
+        <div class="contact-detail"><span>✉</span><span>bonjour@brandfolio.fr</span></div>
+        <div class="contact-detail"><span>☎</span><span>+33 1 23 45 67 89</span></div>
+        <div class="contact-detail"><span>⏱</span><span>Réponse sous 24h garantie</span></div>
+        <div style="margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid rgba(255,255,255,0.2);">
+          <div style="display:flex;gap:8px;">
+            <div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-size:13px;">4.9/5 satisfaction</div>
+            <div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-size:13px;">Réponse 24h</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <p>© 2025 Brandfolio — Tous droits réservés</p>
+  <div class="footer-links"><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#" onclick="goTo('contact')">Contact</a></div>
+</footer>
+
+<script>
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+}
+let isAnnual = false;
+function switchBilling() {
+  isAnnual = !isAnnual;
+  const btn = document.getElementById('toggle');
+  const monthly = document.querySelectorAll('.monthly-price');
+  const annual = document.querySelectorAll('.annual-price');
+  const lblM = document.getElementById('lbl-monthly');
+  const lblA = document.getElementById('lbl-annual');
+  if (isAnnual) {
+    btn.classList.remove('monthly'); btn.classList.add('annual');
+    monthly.forEach(el => el.style.display = 'none');
+    annual.forEach(el => el.style.display = 'block');
+    lblM.classList.remove('active'); lblA.classList.add('active');
+  } else {
+    btn.classList.remove('annual'); btn.classList.add('monthly');
+    monthly.forEach(el => el.style.display = 'block');
+    annual.forEach(el => el.style.display = 'none');
+    lblM.classList.add('active'); lblA.classList.remove('active');
+  }
+}
+</script>
